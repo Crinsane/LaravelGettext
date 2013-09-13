@@ -71,10 +71,13 @@ class GettextServiceProvider extends ServiceProvider {
 		if( ! $this->checkLangDirectory())
 			throw new NoneExistingLangDirectoryException('The "app/storage/lang" directory doesn\'t exist and could not be created.');
 
+		if( ! $this->checkLangLocaleDirectory())
+			throw new NoneExistingLangLocaleDirectory('The "app/storage/lang/' . $this->locale . '" directory doesn\'t exist and could not be created.');
+
 		foreach($poFiles as $file)
 		{
 			$filename = pathinfo($file, PATHINFO_FILENAME);
-			$fullPath = $this->appPath . '/storage/lang/' . $filename . '.php';
+			$fullPath = $this->appPath . '/storage/lang/' . $this->locale . '/' . $filename . '.php';
 
 			if( ! $this->filesystem->exists($fullPath))
 			{
@@ -120,6 +123,21 @@ class GettextServiceProvider extends ServiceProvider {
 	}
 
 	/**
+	 * Check if the locale directory exists in the app/storage/lang directory
+	 *
+	 * @return void
+	 */
+	protected function checkLangLocaleDirectory()
+	{
+		if( ! $this->filesystem->isDirectory($this->appPath . '/storage/lang/' . $this->locale))
+		{
+			return $this->filesystem->makeDirectory($this->appPath . '/storage/lang/' . $this->locale);
+		}
+
+		return true;
+	}
+
+	/**
 	 * Generate a PHP file from the PO file
 	 *
 	 * @param  string $file     The PO file path
@@ -136,4 +154,5 @@ class GettextServiceProvider extends ServiceProvider {
 }
 
 class NoneExistingLangDirectoryException extends \Exception {}
+class NoneExistingLocaleLangDirectoryException extends \Exception {}
 class NoTranslationFilesExistException extends \Exception {}
