@@ -1,6 +1,7 @@
 {
     "name": "gloudemans/gettext",
-    "description": "",
+    "description": "Integrate the PHP Gettext library into Laravel 4",
+    "keywords": ["laravel", "gettext", "translation"],
     "authors": [
         {
             "name": "Rob Gloudemans",
