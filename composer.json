@@ -1,0 +1,21 @@
+{
+    "name": "gloudemans/gettext",
+    "description": "",
+    "authors": [
+        {
+            "name": "Rob Gloudemans",
+            "email": "Rob_Gloudemans@hotmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.0.x",
+        "gettext/gettext": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Gloudemans\\Gettext": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
