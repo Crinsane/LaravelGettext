@@ -15,6 +15,13 @@ class GettextServiceProvider extends ServiceProvider {
 	protected $defer = false;
 
 	/**
+	 * Holds the last modified times
+	 *
+	 * @var array
+	 */
+	protected $lastModified = array();
+
+	/**
 	 * Register the service provider.
 	 *
 	 * @return void
@@ -25,11 +32,15 @@ class GettextServiceProvider extends ServiceProvider {
 		$this->filesystem = $this->app['files'];
 		$this->locale = $this->app['config']->get('app.locale');
 
+		$this->loadLastModified();
+
 		$poFiles = $this->getPOFiles();
 
 		if(empty($poFiles)) return;
 
 		$phpFiles = $this->getPHPFiles($poFiles);
+
+		$this->updateLastModified();
 
 		$this->loadTranslations($phpFiles);
 	}
@@ -82,6 +93,15 @@ class GettextServiceProvider extends ServiceProvider {
 			if( ! $this->filesystem->exists($fullPath))
 			{
 				$this->generatePHPFile($file, $fullPath);
+			}
+			else
+			{
+				$lastModified = $this->filesystem->lastModified($fullPath);
+
+				if($this->lastModified[sha1($fullPath)] < $lastModified)
+				{
+					$this->generatePHPFile($file, $fullPath);
+				}
 			}
 
 			$phpFiles[] = $fullPath;
@@ -149,6 +169,37 @@ class GettextServiceProvider extends ServiceProvider {
 		$translations = PoExtractor::extract($file);
 
 		PhpArrayGenerator::generateFile($translations, $fullPath);
+
+		$lastModified = $this->filesystem->lastModified($file);
+		$this->lastModified[sha1($fullPath)] = $lastModified;
+	}
+
+	/**
+	 * Load the last modified JSON file and decodes it to an array
+	 *
+	 * @return void
+	 */
+	protected function loadLastModified()
+	{
+		$file = $this->appPath . '/storage/lang/languages.json';
+
+		if( ! $this->filesystem->exists($file)) return;
+
+		$lastModified = $this->filesystem->get($file);
+
+		$this->lastModified = json_decode($lastModified, true);
+	}
+
+	/**
+	 * Write the last modified information as JSON string to file
+	 *
+	 * @return void
+	 */
+	protected function updateLastModified()
+	{
+		$lastModifiedJSON = json_encode($this->lastModified);
+
+		$this->filesystem->put($this->appPath . '/storage/lang/languages.json', $lastModifiedJSON);
 	}
 
 }

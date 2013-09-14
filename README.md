@@ -1,3 +1,5 @@
+### Work in Progress - Use at your own risk ###
+
 ## Installation
 
 Install the package through [Composer](http://getcomposer.org/). Edit your project's `composer.json` file by adding:
