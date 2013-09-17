@@ -28,6 +28,11 @@ class GettextServiceProvider extends ServiceProvider {
 		$getTextPreparer = new GettextPreparer($poFileManager, $phpFileManager, $locale);
 
 		$getTextPreparer->prepare();
+
+		$this->app['gettext'] = $this->app->share(function($app) use ($poFileManager, $phpFileManager, $locale)
+		{
+			return new GettextPreparer($poFileManager, $phpFileManager, $locale);
+		});
 	}
 
 	/**

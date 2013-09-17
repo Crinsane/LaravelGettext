@@ -60,6 +60,19 @@ class GettextPreparer {
 	}
 
 	/**
+	 * Function only for the facade for loading new translation files for the locale
+	 *
+	 * @param  string $locale The locale to load the files for
+	 * @return void
+	 */
+	public function load($locale)
+	{
+		$this->loadTranslations($locale);
+
+		return;
+	}
+
+	/**
 	 * Load the translations
 	 *
 	 * @param  string  $locale  The locale to load the files for
