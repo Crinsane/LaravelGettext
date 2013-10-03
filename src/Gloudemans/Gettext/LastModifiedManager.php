@@ -61,7 +61,7 @@ class LastModifiedManager {
 	 */
 	public function get($fileKey)
 	{
-		return $this->lastModified[$fileKey];
+		return (isset($this->lastModified[$fileKey])) ? $this->lastModified[$fileKey] : 0;
 	}
 
 	/**
